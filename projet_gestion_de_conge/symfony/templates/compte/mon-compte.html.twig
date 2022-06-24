@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %} axioconges.monCompte {% endtrans %}{% endblock %}
+
+{% block body %}
+
+<div class="container w-50 p3" >
+{% for message in app.flashes('password_changed') %}
+        <div class="alert alert-success  mb-0">
+            {{message}}
+        </div>
+{% endfor %}
+        <div class="text-center">
+            <h1 class="main-title divider">{% trans %}compte{% endtrans %}</h1>
+        </div>
+
+        <div class="card card-default">
+
+                <div class="card-body">
+
+                    <div class="bordered-left">
+                        <strong><span class="text-primary d-block mb-3">{% trans %}titre.informations{% endtrans %}</span></strong>
+                            <div>
+                                <table style="width: 380px">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Adresse e-mail</strong></td>
+                                            <td>{{app.user.email}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Prénom</strong></td>
+                                            <td>{{app.user.prenom}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Nom</strong></td>
+                                            <td>{{app.user.nom}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td><strong>Roles</strong></td>
+                                            <td> 
+                                            {% trans %}roles.demandeur{% endtrans %}
+                                            {% if app.user.isRh() %}
+                                            {% trans %}roles.rh{% endtrans %}
+                                            {% endif %}
+                                            {% if app.user.isResponsable() %}
+                                            {% trans %}roles.resp{% endtrans %}                                            
+                                            {% endif %}
+                                            {% if app.user.isAdmin() %}
+                                            {% trans %}roles.admin{% endtrans %}
+                                            {% endif %}
+                                             </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+
+                    <div class="bordered-left mt-5">
+                        
+                        <strong><span class="text-primary d-block mb-2">{% trans %}titre.modifierMdp{% endtrans %}</span></strong>
+                        <div class="form-group">
+                            <div class="d-flex align-items-center flex-wrap">
+                                {{form_start(form)}}
+                                <table style="width: 380px">
+                                <tbody>
+                                    <tr>
+                                        <td>{{ form_label(form.oldPassword) }}</td>
+                                        <td>{{form_widget(form.oldPassword, {'attr': {'class': 'form-control form-control-sm'}})}}</td>
+
+                                        {% for error in form.oldPassword.vars['errors'] %}
+                                            <div style="color:#b8060d; font-size:0.9em">{{ error.message }}</div>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <td>{{ form_label(form.password.first) }}</td>
+                                        <td>{{form_widget(form.password.first, {'attr': {'class': 'form-control form-control-sm'}})}}</td>
+                                        {% for error in form.password.first.vars['errors'] %}
+                                            <div style="color:#b8060d; font-size:0.9em">{{ error.message }}</div>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        <td>{{ form_label(form.password.second) }}</td>
+                                        <td>{{form_widget(form.password.second, {'attr': {'class': 'form-control form-control-sm'}})}}</td> 
+                                        {% for error in form.password.second.vars['errors'] %}
+                                            <div style="color:#b8060d; font-size:0.9em">{{ error.message }}</div>
+                                        {% endfor %}
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="text-end">
+                        <input type="submit" class="btn btn-primary ms-1 mt-3" value="{% trans %}confirmer{% endtrans %}">
+                    </div>
+                </div>
+                {{form_end(form)}}
+        </div>
+    </div>    
+</div>
+
+<script>
+window.setTimeout(function() {
+$(".alert").slideUp(500, function() {
+    $(this).remove();
+});
+}, 3000);</script>
+{% endblock %}

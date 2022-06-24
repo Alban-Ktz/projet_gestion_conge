@@ -1,0 +1,335 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {% trans %} axioconges.tableauDeBord {% endtrans %}{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        {# Notifications #}
+        
+        {% for message in app.flashes('success_accept') %}
+            <div class="alert alert-success  mb-0">
+                {{message}}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('success_reject') %}
+            <div class="alert alert-danger  mb-0">
+                {{message}}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('success_edit_resp') %}
+        <div class="alert alert-warning  mb-0">
+            {{message}}
+        </div>
+        {% endfor %}
+        {% for message in app.flashes('success_confirmer') %}
+        <div class="alert alert-success  mb-0">
+            {{message}}
+        </div>
+        {% endfor %}
+
+
+
+
+        <div class="text-center">
+            <h1 class="main-title divider">{% trans %}dashboard{% endtrans %}</h1>
+        </div>
+
+
+
+        {# Tableau de bord - Responsable #}
+
+        {% if is_granted('ROLE_RESPONSABLE') %}
+
+            <div>
+                <h1 class="second-title mb-5 bordered-left">{% trans %}responsable{% endtrans %}</h1>
+            </div>
+
+            {% if (congesEnAttente is empty) and (congesEnCoursAVenir is empty)%}
+
+                <div class="card mb-5">
+                    <div class="card-header">
+                        {% trans %}resp.information{% endtrans %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{% trans %}resp.aucune{% endtrans %}</h5>
+                        <p class="card-text">{% trans %}resp.formuler{% endtrans %}</p>
+                    </div>
+                        <div class="card-footer">
+                        </div>
+                </div>
+
+            {% else %}
+
+                {# Congés en attente d'approbation #}
+
+                {% if (congesEnAttente is  not empty) %}
+
+                    <div class="card card-default mb-5">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">{% trans %}tableauDeBord.attenteApprobation{% endtrans %}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="number" scope="col">{% trans %}numero{% endtrans %}</th>
+                                            <th class="user" scope="col">{% trans %}demandeur{% endtrans %}</th>
+                                            <th scope="col">{% trans %}periode{% endtrans %}</th>
+                                            <th class="type" scope="col">{% trans %}type{% endtrans %}</th>
+                                            <th class="reason" scope="col">{% trans %}motif{% endtrans %}</th>
+                                            <th class="duration" scope="col">{% trans %}duree{% endtrans %}</th>
+                                            <th class="status" scope="col" style="width:180px">{% trans %}statut{% endtrans %}</th>
+                                            <th class="action" scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for conges in congesEnAttente %}
+                                        {% for conge in conges %}
+                                            
+                                            <tr>
+                                                <td>{{conge.id}}</td>
+                                                <td>{{conge.demandeur.getFullName()}}</td>
+                                                {% if conge.datefin is null %}
+                                                <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>)</td>
+                                                {% else %}
+                                                <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>) - {{ conge.datefin|date("d/m/Y") }} (<strong>{{conge.periodefin|trans|lower}}</strong>)</td>
+                                                {% endif %}
+                                                <td>{{conge.type}}</td>
+                                                <td>{{conge.motif}}</td>
+                                                {% if conge.nbjour > 1 %}
+                                                <td>{{conge.nbjour}} {% trans %}jours{% endtrans %}</td>
+                                                {% else %}
+                                                <td>{{conge.nbjour}} {% trans %}jour{% endtrans %}</td>
+                                                {% endif %}
+                                                <td>
+                                                    <a href="{{path('app_responsable_decliner', {'id':conge.id})}}" class="btn btn-sm btn-danger">{% trans %}decliner{% endtrans %}</a>
+                                                    <a href="{{path('app_responsable_approuver', {'id':conge.id})}}" class="btn btn-sm btn-success">{% trans %}approuver{% endtrans %}</a>
+                                                </td>
+                                                <td><a href="{{path('app_modifierconge', {'id':conge.id})}}" class="text-dark"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                                            </tr>
+
+                                        {% endfor %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %} 
+                
+                {# Congés en cours et à venir #}
+
+                {% if (congesEnCoursAVenir is not empty) %}
+
+                    <div class="card card-default mb-5">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">{% trans %}tableauDeBord.enCoursEquipe{% endtrans %}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="number" scope="col">{% trans %}numero{% endtrans %}</th>
+                                            <th class="user" scope="col">{% trans %}demandeur{% endtrans %}</th>
+                                            <th scope="col">{% trans %}periode{% endtrans %}</th>
+                                            <th class="type" scope="col">{% trans %}type{% endtrans %}</th>
+                                            <th class="reason" scope="col">{% trans %}motif{% endtrans %}</th>
+                                            <th class="duration" scope="col">{% trans %}duree{% endtrans %}</th>
+                                            <th class="action" scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for conges in congesEnCoursAVenir %}
+                                        {% for conge in conges %}
+                                            <tr>
+                                                <td>{{conge.id}}</td>
+                                                <td>{{conge.demandeur.getFullName()}}</td>
+                                                {% if conge.datefin is null %}
+                                                <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>)</td>
+                                                {% else %}
+                                                <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>) - {{ conge.datefin|date("d/m/Y") }} (<strong>{{conge.periodefin|trans|lower}}</strong>)</td>
+                                                {% endif %}
+                                                <td>{{conge.type}}</td>
+                                                <td>{{conge.motif}}</td>
+                                                {% if conge.nbjour > 1 %}
+                                                <td>{{conge.nbjour}} {% trans %}jours{% endtrans %}</td>
+                                                {% else %}
+                                                <td>{{conge.nbjour}} {% trans %}jour{% endtrans %}</td>
+                                                {% endif %}
+                                                <td><a href="{{path('app_modifierconge', {'id':conge.id})}}" class="text-dark"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}    
+
+            {% endif %}
+
+        {% endif %}
+
+
+
+
+        {# Tableau de bord - Ressources Humaines #}
+
+        {% if is_granted('ROLE_RH') %}
+
+            <div>
+                <h1 class="second-title mb-5 bordered-left">{% trans %}ressourcehumaine{% endtrans %}</h1>
+            </div>
+
+            {% if (congesAConfirmer is empty) and (congesConfirme is empty)%}
+                <div class="card">
+                    <div class="card-header">
+                        {% trans %}rh.information{% endtrans %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{% trans %}rh.aucun{% endtrans %}</h5>
+                        <p class="card-text">{% trans %}rh.aucunResp{% endtrans %}</p>
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            {% else %}
+
+                {# Congés en attente de confirmation #}
+
+                {% if congesAConfirmer is empty %}
+                        <div class="card mb-5">
+                            <div class="card-header">
+                                {% trans %}rh.information{% endtrans %}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{% trans %}rh.aucunAConfirmer{% endtrans %}</h5>
+                                <p class="card-text">{% trans %}rh.aucunPrevu{% endtrans %}</p>
+                            </div>
+
+                        </div>
+                {% else %}
+
+                    <div class="card card-default mb-5">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">{% trans %}tableauDeBord.attenteConfirmation{% endtrans %}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="number" scope="col">{% trans %}numero{% endtrans %}</th>
+                                            <th class="user" scope="col">{% trans %}demandeur{% endtrans %}</th>
+                                            <th scope="col">{% trans %}periode{% endtrans %}</th>
+                                            <th class="type" scope="col" style="width:180px">{% trans %}type{% endtrans %}</th>
+                                            <th class="reason" scope="col">{% trans %}motif{% endtrans %}</th>
+                                            <th class="duration" scope="col">{% trans %}duree{% endtrans %}</th>
+                                            <th class="status" scope="col">{% trans %}statut{% endtrans %}</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for conge in congesAConfirmer %}
+                                        <tr>
+                                            <td>{{conge.id}}</td>
+                                            <td>{{conge.demandeur.getFullName()}}</td>
+                                            {% if conge.datefin is null %}
+                                            <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>)</td>
+                                            {% else %}
+                                            <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>) - {{ conge.datefin|date("d/m/Y") }} (<strong>{{conge.periodefin|trans|lower}}</strong>)</td>
+                                            {% endif %}
+                                            <td>{{conge.type}}</td>
+                                            <td>{{conge.motif}}</td>
+                                            {% if conge.nbjour > 1 %}
+                                            <td>{{conge.nbjour}} {% trans %}jours{% endtrans %}</td>
+                                            {% else %}
+                                            <td>{{conge.nbjour}} {% trans %}jour{% endtrans %}</td>
+                                            {% endif %}
+                                            <td>
+                                                <a href="{{path('app_rh_confirmer', {'id':conge.id})}}" class="btn btn-sm btn-success">{% trans %}confirmer{% endtrans %}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# Congés confirmés #}
+
+                {% if congesConfirme is not empty %} 
+                    <div class="card card-default mb-5">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">{% trans %}tableauDeBord.congeConfirmer{% endtrans %}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="number" scope="col">{% trans %}numero{% endtrans %}</th>
+                                            <th class="user" scope="col">{% trans %}demandeur{% endtrans %}</th>
+                                            <th scope="col">{% trans %}periode{% endtrans %}</th>
+                                            <th class="type" scope="col" style="width:180px">{% trans %}type{% endtrans %}</th>
+                                            <th class="reason" scope="col">{% trans %}motif{% endtrans %}</th>
+                                            <th class="duration" scope="col">{% trans %}duree{% endtrans %}</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for conge in congesConfirme %}
+                                        <tr>
+                                            <td>{{conge.id}}</td>
+                                            <td>{{conge.demandeur.getFullName()}}</td>
+                                            {% if conge.datefin is null %}
+                                            <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>)</td>
+                                            {% else %}
+                                            <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>) - {{ conge.datefin|date("d/m/Y") }} (<strong>{{conge.periodefin|trans|lower}}</strong>)</td>
+                                            {% endif %}
+                                            <td>{{conge.type}}</td>
+                                            <td>{{conge.motif}}</td>
+                                            {% if conge.nbjour > 1 %}
+                                            <td>{{conge.nbjour}} {% trans %}jours{% endtrans %}</td>
+                                            {% else %}
+                                            <td>{{conge.nbjour}} {% trans %}jour{% endtrans %}</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+        {% endif %}
+
+        </div>
+
+    </div>
+
+    <script>
+    
+        const resp = document.getElementById("tableau_de_bord");
+        resp.classList.add("active");
+
+        window.setTimeout(function() {
+            $(".alert").slideUp(500, function() {
+                $(this).remove();
+            });
+        }, 3000);
+
+    </script>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %} axioconges.demandeDeConges {% endtrans %}{% endblock %}
+
+{% block body %}
+
+    <style>
+    .hideDate {
+        display:block;
+    }
+    .hideMotif {
+        display:none;
+    }
+    </style>
+
+    <div class="container w-50 p-3">
+        <div class="text-center">
+            <h1 class="main-title divider">{% trans %}demande.conges{% endtrans %}</h1>
+        </div>
+
+        <div class="card card-default">
+
+            <div class="card-header">
+                <h4 class="card-title mb-0">{% trans %}demande.nouvelle{% endtrans %}</h4>
+            </div>
+
+            {{form_start(form)}}
+
+                <div class="card-body">
+
+                    {% if (app.user.getDemandeurs is not empty) and ( is_granted('ROLE_RESPONSABLE')) %}
+
+                        {# Demandeur #}
+
+                        <div class="bordered-left mb-5">
+                            <strong><span class="text-primary d-block mb-2">{% trans %}Veuillez choisir le demandeur concerné{% endtrans %}</span></strong>
+
+                            <div class="form-group">
+                                <div class="d-flex align-items-center flex-wrap">
+
+                                    <div class="mt-2 me-2">
+                                        {{ form_widget(form.demandeur, {'attr': {'class': 'selectpicker form-select form-control ms-2', 'data-width': 'fit'}}) }}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                                   
+                    {% endif %}
+
+                    {# Période de congés #}
+                    <div class="bordered-left">
+                        <strong><span class="text-primary d-block mb-3">{% trans %}choisir.periode{% endtrans %}</span></strong>
+                        <div class="row">
+                            <div class="col-sm-6">
+
+                                {# Date de début #}
+
+                                <div class="form-group">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label mb-0 pe-2" id='labelDateDebut'><strong>Du</strong></label>
+                                        <div class="datepicker p-0 input-group date">
+                                            {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control form-control-sm', 'onChange':'hideOrShow()', 'autocomplete':'off'}}) }}
+                                            <span class="input-group-append"><span class="input-group-text" style="height: 30.75px;"><i class="fa fa-calendar"></i></span></span>
+                                        </div>
+                                    </div>
+                                    {% for error in form.dateDebut.vars['errors'] %}
+                                        <div style="color:#b8060d; font-size:0.9em">{{ error.message }}</div>
+                                    {% endfor %}                            
+                                </div>
+
+                                {# Période de début #}
+
+                                <div class="form-group">
+                                    {% set id = 0 %}
+                                    {% for button in form.periodeDebut %}
+                                        <div class="form-check">
+                                            <label class="form-check-label" for="conge_periodeDebut_{{id}}">
+                                                {{button.vars.label}}
+                                            </label>
+                                            {{form_widget(button, {'attr': {'class': 'form-check-input', 'onclick':'hideOrShow()'}})}}
+                                        </div>
+                                        {% set id = id + 1 %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 hideDate" id="dateFin">
+
+                                {# Date de fin #}
+
+                                <div class="form-group">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label mb-0 pe-2"><strong>Au</strong></label>
+                                        <div class="datepicker p-0 input-group date">
+                                            {{ form_widget(form.dateFin, {'attr': {'class': 'form-control form-control-sm', 'autocomplete':'off'}}) }}
+                                            <span class="input-group-append"><span class="input-group-text" style="height: 30.75px;"><i class="fa fa-calendar"></i></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {% for error in form.dateFin.vars['errors'] %}
+                                        <div style="color:#b8060d; font-size:0.9em">{{ error.message }}</div>
+                                    {% endfor %}      
+                                </div>
+
+                                {# Période de fin #}
+
+                                <div class="form-group">
+                                    {% set id = 0 %}
+                                    {% for button in form.periodeFin %}
+                                        <div class="form-check">
+                                            <label class="form-check-label" for="conge_periodeFin_{{id}}">
+                                                {{button.vars.label}}
+                                            </label>
+                                            {{form_widget(button, {'attr': {'class': 'form-check-input'}})}}
+                                        </div>
+                                        {% set id = id + 1 %}
+                                    {% endfor %}
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Type & Motif de congés #}
+
+                    <div class="bordered-left mt-5">
+                        <strong><span class="text-primary d-block mb-2">{% trans %}choisir.type{% endtrans %}</span></strong>
+
+                        <div class="form-group">
+                            <div class="d-flex align-items-center flex-wrap">
+
+                                {# Type de congés #}
+
+                                <div class="mt-2 me-2">
+                                    Cette période de congés sera à titre de 
+                                    {{ form_widget(form.type, {'attr': {'class': 'selectpicker form-select form-control ms-2', 'data-width': 'fit', 'onChange':'hideOrShow()'}}) }}
+                                </div>
+
+                                {# Motif du congés #}
+
+                                <div class="mt-2 hideMotif" id='motif'>
+                                    ayant pour motif
+                                    {{ form_widget(form.motif, {'attr': {'class': 'selectpicker form-select form-control ms-2', 'data-width': 'fit'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card-footer">
+                        <div class="text-end">
+                            <input type="submit" class="btn btn-primary ms-1" value="Soumettre">
+                        </div>
+                    </div>
+
+
+                </div>
+
+                {{form_end(form,{'render_rest': false})}}
+        </div>
+    </div>    
+
+
+    
+<script>
+
+const dateFin = document.getElementById('dateFin');
+const motif = document.getElementById('motif');
+const formulaire = document.getElementById('formulaire');
+formulaire.classList.add("active");
+const labelDateDebut = document.getElementById('labelDateDebut');
+const dateDebut = document.getElementById('conge_dateDebut');
+
+function hideOrShow() {
+    
+    if(document.getElementById('conge_type').value == 'Congés exceptionnels') {
+        motif.style.display = 'block'
+    } else {
+        motif.style.display = 'none'
+    }
+
+    if(document.getElementById('conge_periodeDebut_1').checked) {
+        //hide div & replace 'Du' by 'Le'
+        dateFin.style.display = 'none';
+        labelDateDebut.innerHTML = '<strong>Le</strong>';
+
+        //clear content
+        document.getElementById('conge_dateFin').value = '';
+        document.getElementById('conge_periodeFin_placeholder').checked = true;
+    } else {
+        dateFin.style.display = 'block'
+        labelDateDebut.innerHTML = '<strong>Du</strong>'
+    }
+
+    if(dateDebut.value == '') {
+        dateFin.style.display = 'none';
+        labelDateDebut.innerHTML = '<strong>Le</strong>';
+    } else {
+        dateFin.style.display = 'block';
+        labelDateDebut.innerHTML = '<strong>Du</strong>';
+    }
+
+}
+
+
+
+</script>
+{% endblock %}

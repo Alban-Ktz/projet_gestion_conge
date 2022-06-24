@@ -1,0 +1,18 @@
+{
+  "commitUrlFormat": "{{host}}:50463/syngenta/vigie-flore/pwa/-/commit/{{hash}}",
+  "compareUrlFormat": "{{host}}:50463/syngenta/vigie-flore/pwa/-/compare/{{previousTag}}...{{currentTag}}",
+  "issueUrlFormat": "{{host}}:50463/syngenta/vigie-flore/pwa/-/issues/{{id}}",
+  "types": [
+    {"type": "feat", "section": "Features"},
+    {"type": "fix", "section": "Bug Fixes"},
+    {"type": "update", "section": "Updates"},
+    {"type": "chore", "hidden": true},
+    {"type": "docs", "hidden": true},
+    {"type": "config", "hidden": true},
+    {"type": "dev", "hidden": true},
+    {"type": "style", "hidden": true},
+    {"type": "refactor", "hidden": true},
+    {"type": "perf", "hidden": true},
+    {"type": "test", "hidden": true}
+  ]
+}

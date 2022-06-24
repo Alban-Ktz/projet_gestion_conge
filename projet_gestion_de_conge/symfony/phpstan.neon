@@ -1,0 +1,20 @@
+includes:
+	- vendor/phpstan/phpstan-doctrine/extension.neon
+	- vendor/phpstan/phpstan-doctrine/rules.neon
+	- vendor/phpstan/phpstan-symfony/extension.neon
+	- vendor/phpstan/phpstan-symfony/rules.neon
+parameters:
+    level: 7
+
+    # undo when completed
+    excludePaths:
+    		- src/Services/Version/ReferencesChecker/*
+
+    # ignoreErrors are regular expressions, don't forget to escape regex special characters
+    ignoreErrors:
+      - '#Call to an undefined method [a-zA-Z0-9\\_]+::setParentVersion\(\)#'
+
+    reportUnmatchedIgnoredErrors: false
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    inferPrivatePropertyTypeFromConstructor: true

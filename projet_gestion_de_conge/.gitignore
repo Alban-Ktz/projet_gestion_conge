@@ -1,0 +1,6 @@
+.idea
+.vscode
+docker/php-fpm/ssh/*
+!docker/php-fpm/ssh/.gitkeep
+docker/mariadb/data/*
+!docker/mariadb/data/.gitkeep

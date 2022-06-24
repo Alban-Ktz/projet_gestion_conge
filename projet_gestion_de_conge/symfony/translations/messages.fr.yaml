@@ -1,0 +1,156 @@
+#title page
+axioconges:
+  tableauDeBord: AxioConges - Tableau De Bord
+  mesConges: AxioConges - Mes Congés
+  demandeDeConges: AxioConges - Demande de congés
+  connexion: AxioConges - Connexion
+  monCompte: AxioConges - Mon Compte
+
+#Nav Bar
+mes conges: mes congés
+demande de conges: demande de congés
+dashboard: Tableau de Bord
+responsable: Responsable
+ressourcehumaine: Ressources Humaines
+compte: Mon compte
+deconnexion : Se déconnecter
+easyadmin: EasyAdmin
+
+#/connexion
+connecter: Se connecter
+email:
+  identifiant: Identifiant
+  placeholder: Saississez votre email
+motDePasse:
+  password: Mot de passe
+  placeholder: Entrez votre mot de passe
+souvenir: Se souvenir de moi
+
+#/mes-conges
+conges:
+  liste: Liste de mes <span class="text-primary">congés</span>
+  attente: Congés en attente
+  venir: Congés en cours et à venir
+  passe: Congés passés
+numero: '#'
+periode: Période
+type: Type
+motif: Motif
+duree: Durée
+statut: Statut
+Matin: Matin
+Après-midi: Après-midi
+Toute la journée: Toute la journée
+jours: jours
+jour: jour
+accepte: Accepté
+refuse: Refusé
+attente: En attente
+attention: Attention
+modifier: Modifier
+supprimer: Supprimer
+modelModifier: Modifier une demande de congé qui a déjà été approuvé, devra à nouveau être validé par votre responsable.
+modelSupprimer: Vous vous apprêtez à supprimé définitivement votre demande de congé ! Aucun retour en arrière ne sera possible.
+
+pasConge:
+  information: Information
+  aucune: Aucune demandes de congés
+  formuler: Vous n'avez encore formulé aucune demandes de congés, il n'y a rien à afficher ici.
+  bouton: Faire une demande de congés
+#/demande-de-conge
+demande:
+  conges: Demande de <span class="text-primary">congés</span>
+  nouvelle: Nouvelle demande de congés
+choisir:
+  periode: Veuillez choisir une période
+  type: Veuillez choisir le type et le motif de congés
+Du: Du
+Le: Le
+Au: Au
+
+congePeriode:
+  matin: Matin
+  apresMidi: Après-midi
+  touteLaJournee: Toute la journée
+
+congeType:
+  payes: Congés payés
+  exceptionnels: Congés exceptionnels
+  soldes: Congés sans soldes
+
+congeMotif:
+  none: Non précisé
+  demenagement: Déménagement
+  enfant: Garde d'enfant malade
+  mariage: Mariage / PACS
+  deces: Décès
+
+#/mon-compte
+Old password: Ancien mot de passe
+New Password: Nouveau mot de passe
+Repeat Password: Confirmer le mot de passe
+
+titre:
+  modifierMdp: Modifier son mot de passe
+  informations: Informations Personnelles
+
+roles:
+  demandeur: Demandeur
+  rh: - Ressources Humaines
+  resp: - Responsable
+  admin: - Admin
+
+#/tableau-de-bord
+tableauDeBord:
+  attenteApprobation: Congés en attente d'approbation
+  attenteConfirmation: Congés en attente de attente de confirmation
+  enCoursEquipe: Congés en cours et à venir de l'équipe
+  congeConfirmer: Congés confirmés
+
+demandeur: Demandeur
+decliner: Décliner
+approuver: Approuver
+confirmer: Confirmer
+
+resp:
+  information: Information
+  aucune: Aucune demandes de congés
+  formuler: Votre équipe n'a formulé aucune demandes de congés en attente d'approbation, en cours ou à venir.
+
+rh:
+  information: Information
+  aucun: Aucune demandes de congés
+  aucunAConfirmer: Aucune demandes de congés à confirmer
+  aucunResp: Aucun responsables n'a encore acceptés de congés, il n'y aucun congés à confirmer.
+  aucunPrevu: Il n'y aucun congés de prévus
+
+#EasyAdmin SideBar
+Revenir sur le site web: Revenir sur le site web
+Utilisateur: Utilisateurs
+Conge: Congés
+
+#EasyAdmin PAGE_VIEW User
+User: User
+Identifiant: Identifiant
+Responsable: Responsable
+Admin: Admin
+Liste des responsables: Liste des responsables
+Prenom : Prénom
+Nom : Nom
+
+#EasyAdmin PAGE_EDIT User
+Password: Mot de passe
+Roles: Rôles
+Ressources Humaines: Ressources Humaines
+Demandeur: Demandeur
+Demandeurs: Demandeurs
+Responsables: Responsables
+
+#EasyAdmin PAGE_View Conge
+Date de début: Date de début
+Date de fin: Date de fin
+Période de début: Période de début
+Période de fin: Période de fin
+Type: Type
+Motif: Motif
+Nb Jour: Durée

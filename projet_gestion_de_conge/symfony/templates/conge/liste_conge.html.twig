@@ -1,0 +1,299 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %} axioconges.mesConges {% endtrans %}{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+
+        {# Notifications #}
+
+        {% for message in app.flashes('success_delete') %}
+            <div class="alert alert-danger  mb-0">
+                {{message}}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('success_edit') %}
+            <div class="alert alert-warning  mb-0">
+                {{message}}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('success_add') %}
+            <div class="alert alert-success  mb-0">
+                {{message}}
+            </div>
+        {% endfor %}
+
+
+        <div class="text-center">
+            <h1 class="main-title divider">{% trans %}conges.liste{% endtrans %} </h1>
+        </div>
+
+        {# Affichage des congés #}
+
+        {% if (congesPasse is empty) and (congesAVenir is empty) and (congesEnAttente is empty)%}
+                <div class="card">
+                    <div class="card-header">
+                        {% trans %}pasConge.information{% endtrans %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{% trans %}pasConge.aucune{% endtrans %}</h5>
+                        <p class="card-text">{% trans %}pasConge.formuler{% endtrans %}</p>
+                        <a href="{{ path('app_formulaireconge')}}" class="btn btn-primary">{% trans %}pasConge.bouton{% endtrans %}</a>
+                    </div>
+                        <div class="card-footer">
+                        </div>
+                </div>
+        {% else %}
+
+            {# Mes congés en attente #}
+
+            {% if congesEnAttente is not empty %}
+                <div class="card card-default mb-5">
+
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">{% trans %}conges.attente{% endtrans %}</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+
+                            <table class="table">
+
+                                <thead>
+                                    <tr>
+                                        <th class="number" scope="col">{% trans %}numero{% endtrans %}</th>
+                                        <th scope="col">{% trans %}periode{% endtrans %}</th>
+                                        <th class="type" style="width: 180px;" scope="col">{% trans %}type{% endtrans %}</th>
+                                        <th class="reason" scope="col">{% trans %}motif{% endtrans %}</th>
+                                        <th class="duration" scope="col">{% trans %}duree{% endtrans %}</th>
+                                        <th class="status" scope="col">{% trans %}statut{% endtrans %}</th>
+                                        <th class="action" scope="col"></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for conge in congesEnAttente %}
+                                    <div class="modal fade" id="supprimer_{{conge.id}}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">{% trans %}attention{% endtrans %} :</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% trans %}modelSupprimer{% endtrans %}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{{path('app_supprimerconge', {'id':conge.id})}}"><button type="button" class="btn btn-primary">{% trans %}supprimer{% endtrans %}</button></a>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <tr>
+                                        <td>{{conge.id}}</td>
+
+                                        {% if conge.datefin is null %}
+                                        <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>)</td>
+                                        {% else %}
+                                        <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>) - {{ conge.datefin|date("d/m/Y") }} (<strong>{{conge.periodefin|trans|lower}}</strong>)</td>
+                                        {% endif %}
+
+                                        <td>{{conge.type}}</td>
+                                        <td>{{conge.motif}}</td>
+
+                                        {% if conge.nbjour > 1 %}
+                                        <td>{{conge.nbjour}} {% trans %}jours{% endtrans %}</td>
+                                        {% else %}
+                                        <td>{{conge.nbjour}} {% trans %}jour{% endtrans %}</td>
+                                        {% endif %}
+
+                                        <td><span class="badge rounded-pill bg-secondary">{% trans %}attente{% endtrans %}</span></td>
+                                        <td><a href="{{path('app_modifierconge', {'id':conge.id})}}" class="text-dark px-1"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                        <i class="fa fa-trash" style="cursor: pointer;padding-right: 4px; color: #AD070D" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#supprimer_{{conge.id}}"></i></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Mes congés en cours ET à venir #}
+
+            {% if congesAVenir is not empty %}
+                <div class="card card-default mb-5">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">{% trans %}conges.venir{% endtrans %}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="number" scope="col">{% trans %}numero{% endtrans %}</th>
+                                        <th scope="col">{% trans %}periode{% endtrans %}</th>
+                                        <th class="type" style="width: 180px;" scope="col">{% trans %}type{% endtrans %}</th>
+                                        <th class="reason" scope="col">{% trans %}motif{% endtrans %}</th>
+                                        <th class="duration" scope="col">{% trans %}duree{% endtrans %}</th>
+                                        <th class="status" scope="col">{% trans %}statut{% endtrans %}</th>
+                                        <th class="action" scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for conge in congesAVenir %}
+                                        {# Confirmation Modification #}
+                                        <div class="modal fade" id="modifier_{{conge.id}}" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{% trans %}attention{% endtrans %} :</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% trans %}modelModifier{% endtrans %}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href="{{path('app_modifierconge', {'id':conge.id})}}"><button type="button" class="btn btn-primary">{% trans %}modifier{% endtrans %}</button></a>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {# Confirmation Suppression #}
+                                        <div class="modal fade" id="supprimer_{{conge.id}}" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{% trans %}attention{% endtrans %} :</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% trans %}modelSupprimer{% endtrans %}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href="{{path('app_supprimerconge', {'id':conge.id})}}"><button type="button" class="btn btn-primary">{% trans %}supprimer{% endtrans %}</button></a>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <tr>
+                                            <td>{{conge.id}}</td>
+
+                                            {% if conge.datefin is null %}
+                                            <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>)</td>
+                                            {% else %}
+                                            <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>) - {{ conge.datefin|date("d/m/Y") }} (<strong>{{conge.periodefin|trans|lower}}</strong>)</td>
+                                            {% endif %}         
+
+                                            <td>{{conge.type}}</td>
+                                            <td>{{conge.motif}}</td>
+
+                                            {% if conge.nbjour > 1 %}
+                                            <td>{{conge.nbjour}} {% trans %}jours{% endtrans %}</td>
+                                            {% else %}
+                                            <td>{{conge.nbjour}} {% trans %}jour{% endtrans %}</td>
+                                            {% endif %}
+
+                                            {% if conge.statut == 'Refusé' %}        
+                                            <td><span class="badge rounded-pill bg-danger" data-toggle="tooltip" data-placement="bottom" title="Refusé par: {{conge.validatedby.getFullName()}} {{conge.replyat | date ("d/m/Y")}}">{% trans %}refuse{% endtrans %}</span></td>
+                                            {% else %}
+                                            <td><span class="badge rounded-pill bg-success" data-toggle="tooltip" data-placement="bottom" title="Accepté par: {{conge.validatedby.getFullName()}} {{conge.replyat | date ("d/m/Y")}}">{% trans %}accepte{% endtrans %}</span></td>
+                                            {% endif %}
+                                            <td><i class="fa fa-pencil" style="cursor: pointer;padding-right: 4px"aria-hidden="true" data-bs-toggle="modal" data-bs-target="#modifier_{{conge.id}}"></i></a>
+                                            {% if not conge.isEnCours() %}
+                                                <i class="fa fa-trash" style="cursor: pointer;padding-right: 4px; color: #AD070D" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#supprimer_{{conge.id}}"></i>
+                                            {% endif %}
+                                            </td>
+
+                                        </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if congesPasse is not empty %}
+                <div class="card card-default">
+                
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">{% trans %}conges.passe{% endtrans %}</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="number" scope="col">{% trans %}numero{% endtrans %}</th>
+                                        <th scope="col">{% trans %}periode{% endtrans %}</th>
+                                        <th class="type" style="width: 180px;" scope="col">{% trans %}type{% endtrans %}</th>
+                                        <th class="reason" scope="col">{% trans %}motif{% endtrans %}</th>
+                                        <th class="duration" scope="col">{% trans %}duree{% endtrans %}</th>
+                                        <th class="status" scope="col">{% trans %}statut{% endtrans %}</th>
+                                        <th class="action" scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for conge in congesPasse %}
+                                    <tr>
+                                        <td>{{conge.id}}</td>
+
+                                        {% if conge.datefin is null %}
+                                        <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>)</td>
+                                        {% else %}
+                                        <td>{{conge.datedebut|date("d/m/Y") }} (<strong>{{conge.periodedebut|trans|lower}}</strong>) - {{ conge.datefin|date("d/m/Y") }} (<strong>{{conge.periodefin|trans|lower}}</strong>)</td>
+                                        {% endif %}  
+
+                                        <td>{{conge.type}}</td>
+                                        <td>{{conge.motif}}</td>
+
+                                        {% if conge.nbjour > 1 %}
+                                        <td>{{conge.nbjour}} {% trans %}jours{% endtrans %}</td>
+                                        {% else %}
+                                        <td>{{conge.nbjour}} {% trans %}jour{% endtrans %}</td>
+                                        {% endif %}
+
+                                        {% if conge.statut == 'Refuse' %}
+                                        <td><span class="badge rounded-pill bg-danger" data-toggle="tooltip" data-placement="bottom" title="Refusé par: {{conge.validatedby.getFullName()}} {{conge.replyat | date ("d/m/Y")}}">{% trans %}refuse{% endtrans %}</span></td>
+                                        {% else %}
+                                        <td><span class="badge rounded-pill bg-success" data-toggle="tooltip" data-placement="bottom" title="Accepté par: {{conge.validatedby.getFullName()}} {{conge.replyat | date ("d/m/Y")}}"></span></td>
+                                        {% endif %}
+                                        <td></td>
+
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+<script>
+const mesconges = document.getElementById('mesconges');
+mesconges.classList.add("active");
+
+window.setTimeout(function() {
+$(".alert").slideUp(500, function() {
+    $(this).remove();
+});
+}, 3000);
+
+
+
+
+</script>
+
+{% endblock %}

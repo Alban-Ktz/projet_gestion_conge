@@ -1,0 +1,19 @@
+stages:
+  - test
+
+.test_deploy_template:
+  image: composer:1.10.19
+  services:
+    - php:7.4
+
+  cache:
+    paths:
+      - vendor
+
+  before_script:
+    - composer install --ignore-platform-reqs --no-progress
+
+continous_integration:
+  extends: .test_deploy_template
+  script:
+    - sh pre-commit.sh
