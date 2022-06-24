@@ -5,12 +5,12 @@
 - $ make run
 
 ## Database
-$ make console doctrine:database:create
-$ make console make:migration
-$ make console doctrine:migrations:migrate
+- $ make console doctrine:database:create
+- $ make console make:migration
+- $ make console doctrine:migrations:migrate
 
 ## Create an admin user
-$ make console app:create-user
+- $ make console app:create-user
 
 ## Link
 http://localhost:8000/
