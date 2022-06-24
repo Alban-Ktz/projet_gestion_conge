@@ -1,8 +1,8 @@
 #Demande de congés
 
 ## Build & Run the containers
-$ make build
-$ make run
+*$ make build
+*$ make run
 
 ## Database
 $ make console doctrine:database:create
